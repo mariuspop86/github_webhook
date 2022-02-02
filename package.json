@@ -1,0 +1,21 @@
+{
+  "name": "github-webhooks",
+  "version": "1.0.0",
+  "description": "A project to run pipelines",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Marius Pop",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.25.0",
+    "cors": "^2.8.5",
+    "dotenv": "^15.0.0",
+    "express": "^4.17.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/maniakill/gitlab-webhooks.git"
+  }
+}
