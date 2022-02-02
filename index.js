@@ -5,7 +5,7 @@ const GithubController = require('./app/controller/GithubController');
 const BaseController = require('./app/controller/BaseController');
 
 // Constants
-const PORT = process.env.PORT || 45454;
+const PORT = process.env.PORT || 80;
 const HOST = '0.0.0.0';
 
 const app = express();
