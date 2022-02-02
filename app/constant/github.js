@@ -7,8 +7,10 @@ const github = {
 };
 
 const ptaToken = process.env.GITHUB_PTA
+const secret = process.env.GITHUB_SECRET
 
 module.exports = {
   github,
-  ptaToken
+  ptaToken,
+  secret
 };
