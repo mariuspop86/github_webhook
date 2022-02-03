@@ -24,14 +24,15 @@ app.use('/payload', (req, res, next) => {
 	const [,,branch] = ref.split('/');
 	
 	if (!allowedBranches.includes(branch)) {
-		console.log(`Branche ${branch} from ${full_name} repo does not match`);
+		console.log(`Branch ${branch} from ${full_name} repo does not match`);
     res.send('nok');
 
     return;
 	}
   axios.post(host+reposAPI, 
   	{
-  		"event_type": full_name
+  		"event_type": full_name,
+			"client_payload": { "branch": branch }
   	},
     {
   	  headers: {
@@ -39,7 +40,7 @@ app.use('/payload', (req, res, next) => {
   	  }
   })
   .then(() => {
-    console.log('Webhook sent')
+    console.log(`Webhook sent for branch ${branch} on repo ${full_name}`)
   })
   .catch(error => {
     console.log('error', error);
