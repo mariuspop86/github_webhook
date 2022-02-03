@@ -24,7 +24,7 @@ app.use('/payload', (req, res, next) => {
 	const [,,branch] = ref.split('/');
 	
 	if (!allowedBranches.includes(branch)) {
-		console.log('Branches does not match');
+		console.log(`Branche ${branch} from ${full_name} repo does not match`);
     res.send('nok');
 
     return;
@@ -38,8 +38,8 @@ app.use('/payload', (req, res, next) => {
   		  'Authorization': `token ${ptaToken}`
   	  }
   })
-  .then(response => {
-    console.log(response)
+  .then(() => {
+    console.log('Webhook sent')
   })
   .catch(error => {
     console.log('error', error);
