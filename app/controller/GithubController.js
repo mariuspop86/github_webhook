@@ -3,7 +3,7 @@ const express = require('express');
 const axios = require('axios');
 const { createHmac, timingSafeEqual } = require('crypto');
 
-const allowedBranches = ['develop', 'recette', 'test-pipeline'];
+const allowedBranches = ['develop', 'recette', 'test-pipeline', 'pipeline'];
 
 const app = express();
 
