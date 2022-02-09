@@ -7,7 +7,7 @@ const allowedBranches = ['develop', 'recette', 'test-pipeline', 'pipeline'];
 
 const app = express();
 
-app.use('/payload', (req, res, next) => {
+app.use('/payload?2', (req, res, next) => {
   const sig = req.headers['x-hub-signature'] || null;
 	const hmac = createHmac('sha1', secret);
 	const digest = Buffer.from('sha1=' + hmac.update(JSON.stringify(req.body)).digest('hex'), 'utf8');
@@ -16,6 +16,7 @@ app.use('/payload', (req, res, next) => {
 		console.log('signature does not match');
 	  res.send('nok');
 	} else {
+		console.log('Signature matched!')
 	  next();
 	}
 }).post('/payload', async (req, res) => {
@@ -47,6 +48,11 @@ app.use('/payload', (req, res, next) => {
   });
 
   res.send('ok');
+}).post('/payload2',(req, res) => {
+	const { actions, workflow_run: { name, conclusion, html_url } } = req.body;
+	console.log(actions, name, conclusion, html_url)
+	res.send('ok');
 });
 
 module.exports = app;
+
