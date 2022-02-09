@@ -8,9 +8,11 @@ const github = {
 
 const ptaToken = process.env.GITHUB_PTA
 const secret = process.env.GITHUB_SECRET
+const slack_url = process.env.SLACK_URL
 
 module.exports = {
   github,
   ptaToken,
-  secret
+  secret,
+  slack_url
 };

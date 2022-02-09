@@ -1,4 +1,4 @@
-const { github, ptaToken, secret } = require('../constant/github');
+const { github, ptaToken, secret, slack_url } = require('../constant/github');
 const express = require('express');
 const axios = require('axios');
 const { createHmac, timingSafeEqual } = require('crypto');
@@ -13,7 +13,7 @@ app.use('/payload?2', (req, res, next) => {
 	const digest = Buffer.from('sha1=' + hmac.update(JSON.stringify(req.body)).digest('hex'), 'utf8');
 	const checksum = Buffer.from(sig, 'utf8');
 	if (checksum.length !== digest.length || !timingSafeEqual(digest, checksum)) {
-		console.log('signature does not match');
+		console.log('Signature does not match');
 	  res.send('nok');
 	} else {
 		console.log('Signature matched!')
@@ -49,8 +49,18 @@ app.use('/payload?2', (req, res, next) => {
 
   res.send('ok');
 }).post('/payload2',(req, res) => {
-	const { actions, workflow_run: { name, conclusion, html_url } } = req.body;
-	console.log(actions, name, conclusion, html_url)
+	const { action, workflow_run: { name, conclusion, html_url } } = req.body;
+	
+	if (action==='completed') {
+		axios.post(slack_url,
+			{
+				"text": ` - workflow <${html_url}|*${name}*> completed with *${conclusion}* - `
+			})
+			.catch(error => {
+				console.log('error', error);
+			});
+	}
+	
 	res.send('ok');
 });
 
