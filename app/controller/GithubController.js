@@ -32,45 +32,49 @@ app.use('/payload?2', (req, res, next) => {
 
     return;
 	}
-  axios.post(host+reposAPI, 
-  	{
-  		"event_type": full_name,
-			"client_payload": { "branch": branch }
-  	},
-    {
-  	  headers: {
-  		  'Authorization': `token ${ptaToken}`
-  	  }
-  })
-  .then( (res) => {
-		axios.get(host+runsAPI, {
-			headers: {
-				'Authorization': `token ${ptaToken}`
-			}
-		}).then(async (res) => {
-			
-			const { workflow_runs } = res.data;
-			const [firstWorkflow] = workflow_runs;
-			const { id, html_url, name, status, conclusion } = firstWorkflow;
-			const data = {
-				user: { login, user_html_url },
-				workflow: { id, html_url, name, status, conclusion }
-			}
-
-			const e = await Workflow.create(data);
-			console.log('Payload', e);
-		});
+	try {
+		await axios.post(host + reposAPI,
+			{
+				"event_type": full_name,
+				"client_payload": {"branch": branch}
+			},
+			{
+				headers: {
+					'Authorization': `token ${ptaToken}`
+				}
+			});
 		
-		console.log(`Webhook sent for branch ${branch} on repo ${full_name}`)
-  })
-  .catch(error => {
-    console.log('error', error);
-  });
+		setTimeout(async () => {
+			try {
+				const res = axios.get	(host+runsAPI, {
+					headers: {
+						'Authorization': `token ${ptaToken}`
+					}
+				});
+
+				const { workflow_runs } = res.data;
+				const [firstWorkflow] = workflow_runs;
+				const { id, html_url, name, status, conclusion } = firstWorkflow;
+				const data = {
+					user: { login, user_html_url },
+					workflow: { id, html_url, name, status, conclusion }
+				}
+
+				const e = await Workflow.create(data);
+				console.log('Payload', e);
+
+			} catch (e) {
+				console.log(e.message);
+			}
+		}, 1000)
+	} catch (e) {
+		console.log(e.message);
+	}
 
   res.send('ok');
 }).post('/payload2',async (req, res) => {
 	const { action, workflow_run: { id, name, conclusion, html_url } } = req.body;
-	console.log(id);
+	console.log(id, Workflow);
 	const e = await Workflow.get(id);
 	console.log('Payload 2', e);
 	
