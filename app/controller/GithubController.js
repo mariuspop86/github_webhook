@@ -51,7 +51,7 @@ app.use('/payload?2', (req, res, next) => {
 				'Authorization': `token ${ptaToken}`
 			}
 		}).then(async (res) => {
-			// console.log(res.data , host+runsAPI)
+			
 			const { workflow_runs } = res.data;
 			const [firstWorkflow] = workflow_runs;
 			const { id, html_url, name, status, conclusion } = firstWorkflow;
@@ -59,7 +59,8 @@ app.use('/payload?2', (req, res, next) => {
 				user: { login, html_url },
 				workflow: { id, html_url, name, status, conclusion }
 			}
-			const doc = await client.query(
+			console.log(data);
+			await client.query(
 				Create(
 					Collection('workflows'),
 					{ data }
