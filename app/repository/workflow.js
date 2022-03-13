@@ -3,11 +3,11 @@ const client = require('.');
 
 const  { Create, Collection, Get, Match, Index } = faunadb.query;
 
-function Workflow() {
-  const collection = 'workflows';
-  const index_by_id = 'workflow_by_id';
-  
-  const create = async (data) => {
+const collection = 'workflows';
+const index_by_id = 'workflow_by_id';
+
+const Workflow = {
+  create: async (data) => {
     try {
       return await client.query(
         Create(
@@ -20,9 +20,8 @@ function Workflow() {
     }
     
     return null;
-  }
-  
-  const get = async (id) => {
+  },
+  get: async (id) => {
     try {
       return await client.query(
         Get(
@@ -34,10 +33,6 @@ function Workflow() {
     }
     
     return null;
-  }
-  return {
-    create,
-    get
   }
 }
 
