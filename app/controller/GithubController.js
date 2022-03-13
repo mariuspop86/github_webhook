@@ -4,7 +4,7 @@ const axios = require('axios');
 const { createHmac, timingSafeEqual } = require('crypto');
 const faunadb = require('faunadb');
 
-const client = new faunadb.Client({ secret: faunadbclient })
+const client = new faunadb.Client({ secret: faunadbclient, domain: 'db.fauna.com', scheme: 'https', port: 443 })
 
 const  { Create, Collection } = faunadb.query;
 
@@ -60,12 +60,17 @@ app.use('/payload?2', (req, res, next) => {
 				workflow: { id, html_url, name, status, conclusion }
 			}
 			console.log(data);
-			await client.query(
-				Create(
-					Collection('workflows'),
-					{ data }
+			try {
+				const response = await client.query(
+					Create(
+						Collection('workflows'),
+						{data}
+					)
 				)
-			)
+				console.log(response);
+			} catch (e) {
+				console.log(e.message);
+			}
 		});
 		
 		
