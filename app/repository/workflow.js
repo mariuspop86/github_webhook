@@ -16,7 +16,7 @@ const Workflow = {
         )
       )
     } catch (e) {
-      console.log(e.message);
+      console.log(`Error: ${e.message}`);
     }
     
     return null;
@@ -29,7 +29,7 @@ const Workflow = {
         )
       )
     } catch (e) {
-      console.log(e.message);
+      console.log(`Error: ${e.message}`);
     }
     
     return null;
