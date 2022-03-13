@@ -52,7 +52,7 @@ app.use('/payload?2', (req, res, next) => {
 			}
 		}).then(async (res) => {
 			console.log(res, host+runsAPI)
-			const { workflows: { id, html_url, name, status, conclusion } } = res.body;
+			const { workflows: { id, html_url, name, status, conclusion } } = res.data;
 			const data = {
 				user: { login, html_url },
 				workflow: { id, html_url, name, status, conclusion }
