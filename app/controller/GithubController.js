@@ -22,9 +22,10 @@ app.use('/payload?2', (req, res, next) => {
 	}
 }).post('/payload', async (req, res) => {
 	const { host, reposAPI, runsAPI } = github;
-	const {ref, repository: { full_name }, sender: { login, html_url } } = req.body;
-	console.log(req.body)
+	const { ref, repository: { full_name }, sender: { login, html_url }, head_commit: { author: { name }, url } } = req.body;
 	const user_html_url = html_url;
+	const commit_url = url;
+	const author_name = name;
 	const [,,branch] = ref.split('/');
 	
 	if (!allowedBranches.includes(branch)) {
@@ -55,15 +56,12 @@ app.use('/payload?2', (req, res, next) => {
 
 				const { workflow_runs } = res.data;
 				const [firstWorkflow] = workflow_runs;
-				const { id, html_url, name, status, conclusion } = firstWorkflow;
+				const { id, html_url, name } = firstWorkflow;
 				const data = {
-					user: { login, user_html_url },
-					workflow: { id, html_url, name, status, conclusion }
+					user: { login, user_html_url, author_name },
+					workflow: { id, html_url, name, commit_url }
 				}
-
-				const e = await Workflow.create(data);
-				console.log('Payload', e);
-
+        await Workflow.create(data);
 			} catch (e) {
 				console.log(e.message);
 			}
@@ -77,7 +75,12 @@ app.use('/payload?2', (req, res, next) => {
 	const { action, workflow_run: { id, name, conclusion, html_url } } = req.body;
 	const e = await Workflow.get(id);
 	console.log('Payload 2', id, action, e);
-	
+	let text = ` - workflow <${html_url}|*${name}*> completed with *${conclusion}* - `
+	if (e) {
+		const {user: {user_html_url, author_name},workflow: { commit_url } } = e.data
+		text += ` <${author_name}|*${user_html_url}*> pushed <commit|*${commit_url}*> `;
+	}
+	console.log(text)
 	if (action==='completed') {
 		// axios.post(slack_url,
 		// 	{
