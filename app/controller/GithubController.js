@@ -3,11 +3,11 @@ const express = require('express');
 const axios = require('axios');
 const { createHmac, timingSafeEqual } = require('crypto');
 const Workflow = require('../repository/workflow');
-const faunadb = require('faunadb');
+// const faunadb = require('faunadb');
 
-const client = new faunadb.Client({ secret: faunadbclient, domain: 'db.eu.fauna.com', scheme: 'https', port: 443 })
+// const client = new faunadb.Client({ secret: faunadbclient, domain: 'db.eu.fauna.com', scheme: 'https', port: 443 })
 
-const  { Create, Collection, Get, Match, Index } = faunadb.query;
+// const  { Create, Collection, Get, Match, Index } = faunadb.query;
 
 const allowedBranches = ['develop', 'recette', 'test-pipeline', 'pipeline'];
 
