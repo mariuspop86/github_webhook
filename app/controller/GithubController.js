@@ -66,7 +66,7 @@ app.use('/payload?2', (req, res, next) => {
 			} catch (e) {
 				console.log(e.message);
 			}
-		}, 1000)
+		}, 1500)
 	} catch (e) {
 		console.log(e.message);
 	}
@@ -75,7 +75,7 @@ app.use('/payload?2', (req, res, next) => {
 }).post('/payload2',async (req, res) => {
 	const { action, workflow_run: { id, name, conclusion, html_url } } = req.body;
 	const e = await Workflow.get(id);
-	console.log('Payload 2', e);
+	console.log('Payload 2', id, e);
 	
 	if (action==='completed') {
 		// axios.post(slack_url,
