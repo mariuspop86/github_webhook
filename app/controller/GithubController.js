@@ -74,21 +74,21 @@ app.use('/payload?2', (req, res, next) => {
 }).post('/payload2',async (req, res) => {
 	const { action, workflow_run: { id, name, conclusion, html_url } } = req.body;
 	const e = await Workflow.get(id);
-	console.log('Payload 2', id, action, e);
+	
 	let text = ` - workflow <${html_url}|*${name}*> completed with *${conclusion}* - `
 	if (e) {
 		const {user: {user_html_url, author_name},workflow: { commit_url } } = e.data
 		text += ` <${author_name}|*${user_html_url}*> pushed <commit|*${commit_url}*> `;
 	}
-	console.log(text)
+	
 	if (action==='completed') {
-		// axios.post(slack_url,
-		// 	{
-		// 		"text": ` - workflow <${html_url}|*${name}*> completed with *${conclusion}* - `
-		// 	})
-		// 	.catch(error => {
-		// 		console.log('error', error);
-		// 	});
+		axios.post(slack_url,
+			{
+				"text": text
+			})
+			.catch(error => {
+				console.log('error', error);
+			});
 	}
 	
 	res.send('ok');
