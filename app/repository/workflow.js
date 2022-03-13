@@ -1,5 +1,5 @@
 const faunadb = require('faunadb');
-const client = require('index');
+const client = require('.');
 
 const  { Create, Collection, Get, Match, Index } = faunadb.query;
 
