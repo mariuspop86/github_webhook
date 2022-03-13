@@ -1,5 +1,5 @@
 const faunadb = require('faunadb');
-const client = require('.');
+const Client = require('.');
 
 const  { Create, Collection, Get, Match, Index } = faunadb.query;
 
@@ -8,9 +8,9 @@ const index_by_id = 'workflow_by_id';
 
 const Workflow = {
   create: async (data) => {
-    console.log(client)
+    console.log(Client)
     try {
-      return await client.query(
+      return await Client.query(
         Create(
           Collection(collection),
           { data }
@@ -23,9 +23,9 @@ const Workflow = {
     return null;
   },
   get: async (id) => {
-    console.log(client)
+    console.log(Client)
     try {
-      return await client.query(
+      return await Client.query(
         Get(
           Match(Index(index_by_id), parseInt(id))
         )
