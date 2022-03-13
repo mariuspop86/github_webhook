@@ -25,7 +25,7 @@ const Workflow = {
     try {
       return await client.query(
         Get(
-          Match(Index(index_by_id), id)
+          Match(Index(index_by_id), parseInt(id))
         )
       )
     } catch (e) {

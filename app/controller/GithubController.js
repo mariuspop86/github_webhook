@@ -58,7 +58,7 @@ app.use('/payload?2', (req, res, next) => {
 			}
 
 			const e = await Workflow.create(data);
-			console.log(e);
+			console.log('Payload', e);
 		});
 		
 		console.log(`Webhook sent for branch ${branch} on repo ${full_name}`)
@@ -70,8 +70,9 @@ app.use('/payload?2', (req, res, next) => {
   res.send('ok');
 }).post('/payload2',async (req, res) => {
 	const { action, workflow_run: { id, name, conclusion, html_url } } = req.body;
+	console.log(id);
 	const e = await Workflow.get(id);
-	console.log(e);
+	console.log('Payload 2', e);
 	
 	if (action==='completed') {
 		// axios.post(slack_url,
