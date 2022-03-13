@@ -6,7 +6,7 @@ const faunadb = require('faunadb');
 
 const client = new faunadb.Client({ secret: faunadbclient })
 
-const  { Create, Collection , get  } = client.query;
+const  { Create, Collection } = faunadb.query;
 
 const allowedBranches = ['develop', 'recette', 'test-pipeline', 'pipeline'];
 
