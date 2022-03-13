@@ -51,7 +51,7 @@ app.use('/payload?2', (req, res, next) => {
 				'Authorization': `token ${ptaToken}`
 			}
 		}).then(async (res) => {
-			console.log(res.body)
+			console.log(res, host+runsAPI)
 			const { workflows: { id, html_url, name, status, conclusion } } = res.body;
 			const data = {
 				user: { login, html_url },
