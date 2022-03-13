@@ -1,7 +1,12 @@
-const { github, ptaToken, secret, slack_url } = require('../constant/github');
+const { faunadbclient, github, ptaToken, secret, slack_url } = require('../constant/github');
 const express = require('express');
 const axios = require('axios');
 const { createHmac, timingSafeEqual } = require('crypto');
+const faunadb = require('faunadb');
+
+const client = new faunadb.Client({ secret: faunadbclient })
+
+const  { Create, Collection , get  } = client.query;
 
 const allowedBranches = ['develop', 'recette', 'test-pipeline', 'pipeline'];
 
@@ -20,10 +25,10 @@ app.use('/payload?2', (req, res, next) => {
 	  next();
 	}
 }).post('/payload', async (req, res) => {
-	const { host, reposAPI } = github;
-	const {ref, repository: { full_name } } = req.body;
+	const { host, reposAPI, runsAPI } = github;
+	const {ref, repository: { full_name }, sender: { login, html_url } } = req.body;
 	const [,,branch] = ref.split('/');
-	console.log(req.body)
+	
 	if (!allowedBranches.includes(branch)) {
 		console.log(`Branch ${branch} from ${full_name} repo does not match`);
     res.send('nok');
@@ -40,9 +45,28 @@ app.use('/payload?2', (req, res, next) => {
   		  'Authorization': `token ${ptaToken}`
   	  }
   })
-  .then((res) => {
-		console.log(res.body)
-    console.log(`Webhook sent for branch ${branch} on repo ${full_name}`)
+  .then( (res) => {
+		axios.get(host+runsAPI, {
+			headers: {
+				'Authorization': `token ${ptaToken}`
+			}
+		}).then(async (res) => {
+			console.log(res.body)
+			const { workflows: { id, html_url, name, status, conclusion } } = res.body;
+			const data = {
+				user: { login, html_url },
+				workflow: { id, html_url, name, status, conclusion }
+			}
+			const doc = await client.query(
+				Create(
+					Collection('workflows'),
+					{ data }
+				)
+			)
+		});
+		
+		
+		console.log(`Webhook sent for branch ${branch} on repo ${full_name}`)
   })
   .catch(error => {
     console.log('error', error);
