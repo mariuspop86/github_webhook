@@ -23,7 +23,7 @@ app.use('/payload?2', (req, res, next) => {
 	const { host, reposAPI } = github;
 	const {ref, repository: { full_name } } = req.body;
 	const [,,branch] = ref.split('/');
-	
+	console.log(req.body)
 	if (!allowedBranches.includes(branch)) {
 		console.log(`Branch ${branch} from ${full_name} repo does not match`);
     res.send('nok');
@@ -41,7 +41,7 @@ app.use('/payload?2', (req, res, next) => {
   	  }
   })
   .then((res) => {
-		console.log(res)
+		console.log(res.body)
     console.log(`Webhook sent for branch ${branch} on repo ${full_name}`)
   })
   .catch(error => {
