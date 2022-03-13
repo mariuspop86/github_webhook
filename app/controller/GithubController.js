@@ -4,7 +4,7 @@ const axios = require('axios');
 const { createHmac, timingSafeEqual } = require('crypto');
 const faunadb = require('faunadb');
 
-const client = new faunadb.Client({ secret: faunadbclient, domain: 'db.fauna.com', scheme: 'https', port: 443 })
+const client = new faunadb.Client({ secret: faunadbclient, domain: 'db.eu.fauna.com', scheme: 'https', port: 443 })
 
 const  { Create, Collection } = faunadb.query;
 
