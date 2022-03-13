@@ -40,7 +40,8 @@ app.use('/payload?2', (req, res, next) => {
   		  'Authorization': `token ${ptaToken}`
   	  }
   })
-  .then(() => {
+  .then((res) => {
+		console.log(res)
     console.log(`Webhook sent for branch ${branch} on repo ${full_name}`)
   })
   .catch(error => {
@@ -52,13 +53,13 @@ app.use('/payload?2', (req, res, next) => {
 	const { action, workflow_run: { name, conclusion, html_url } } = req.body;
 	
 	if (action==='completed') {
-		axios.post(slack_url,
-			{
-				"text": ` - workflow <${html_url}|*${name}*> completed with *${conclusion}* - `
-			})
-			.catch(error => {
-				console.log('error', error);
-			});
+		// axios.post(slack_url,
+		// 	{
+		// 		"text": ` - workflow <${html_url}|*${name}*> completed with *${conclusion}* - `
+		// 	})
+		// 	.catch(error => {
+		// 		console.log('error', error);
+		// 	});
 	}
 	
 	res.send('ok');
