@@ -8,6 +8,7 @@ const index_by_id = 'workflow_by_id';
 
 const Workflow = {
   create: async (data) => {
+    console.log(client)
     try {
       return await client.query(
         Create(
@@ -22,6 +23,7 @@ const Workflow = {
     return null;
   },
   get: async (id) => {
+    console.log(client)
     try {
       return await client.query(
         Get(

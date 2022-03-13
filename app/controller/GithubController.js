@@ -46,7 +46,7 @@ app.use('/payload?2', (req, res, next) => {
 		
 		setTimeout(async () => {
 			try {
-				const res = axios.get	(host+runsAPI, {
+				const res = await axios.get(host+runsAPI, {
 					headers: {
 						'Authorization': `token ${ptaToken}`
 					}
@@ -74,7 +74,6 @@ app.use('/payload?2', (req, res, next) => {
   res.send('ok');
 }).post('/payload2',async (req, res) => {
 	const { action, workflow_run: { id, name, conclusion, html_url } } = req.body;
-	console.log(id, Workflow);
 	const e = await Workflow.get(id);
 	console.log('Payload 2', e);
 	
