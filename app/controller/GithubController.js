@@ -2,11 +2,12 @@ const { faunadbclient, github, ptaToken, secret, slack_url } = require('../const
 const express = require('express');
 const axios = require('axios');
 const { createHmac, timingSafeEqual } = require('crypto');
+const Workflow = require('../repository/workflow');
 const faunadb = require('faunadb');
 
 const client = new faunadb.Client({ secret: faunadbclient, domain: 'db.eu.fauna.com', scheme: 'https', port: 443 })
 
-const  { Create, Collection } = faunadb.query;
+const  { Create, Collection, Get, Match, Index } = faunadb.query;
 
 const allowedBranches = ['develop', 'recette', 'test-pipeline', 'pipeline'];
 
@@ -27,6 +28,7 @@ app.use('/payload?2', (req, res, next) => {
 }).post('/payload', async (req, res) => {
 	const { host, reposAPI, runsAPI } = github;
 	const {ref, repository: { full_name }, sender: { login, html_url } } = req.body;
+	const user_html_url = html_url;
 	const [,,branch] = ref.split('/');
 	
 	if (!allowedBranches.includes(branch)) {
@@ -56,21 +58,24 @@ app.use('/payload?2', (req, res, next) => {
 			const [firstWorkflow] = workflow_runs;
 			const { id, html_url, name, status, conclusion } = firstWorkflow;
 			const data = {
-				user: { login, html_url },
+				user: { login, user_html_url },
 				workflow: { id, html_url, name, status, conclusion }
 			}
 			console.log(data);
-			try {
-				const response = await client.query(
-					Create(
-						Collection('workflows'),
-						{data}
-					)
-				)
-				console.log(response);
-			} catch (e) {
-				console.log(e.message);
-			}
+
+			const e = Workflow.create(data);
+			console.log(e);
+			// try {
+			// 	const response = await client.query(
+			// 		Create(
+			// 			Collection('workflows'),
+			// 			{data}
+			// 		)
+			// 	)
+			// 	console.log(response);
+			// } catch (e) {
+			// 	console.log(e.message);
+			// }
 		});
 		
 		
@@ -81,9 +86,20 @@ app.use('/payload?2', (req, res, next) => {
   });
 
   res.send('ok');
-}).post('/payload2',(req, res) => {
-	const { action, workflow_run: { name, conclusion, html_url } } = req.body;
-	
+}).post('/payload2',async (req, res) => {
+	const { action, workflow_run: { id, name, conclusion, html_url } } = req.body;
+	const e = Workflow.get(id);
+	console.log(e);
+	// try {
+	// 	const response = await client.query(
+	// 		Get(
+	// 			Match(Index('workflow_by_id'), id)
+	// 		)
+	// 	)
+	// 	console.log(response);
+	// } catch (e) {
+	// 	console.log(e.message);
+	// }
 	if (action==='completed') {
 		// axios.post(slack_url,
 		// 	{
