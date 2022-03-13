@@ -23,6 +23,7 @@ app.use('/payload?2', (req, res, next) => {
 }).post('/payload', async (req, res) => {
 	const { host, reposAPI, runsAPI } = github;
 	const {ref, repository: { full_name }, sender: { login, html_url } } = req.body;
+	console.log(req.body)
 	const user_html_url = html_url;
 	const [,,branch] = ref.split('/');
 	
@@ -75,7 +76,7 @@ app.use('/payload?2', (req, res, next) => {
 }).post('/payload2',async (req, res) => {
 	const { action, workflow_run: { id, name, conclusion, html_url } } = req.body;
 	const e = await Workflow.get(id);
-	console.log('Payload 2', id, e);
+	console.log('Payload 2', id, action, e);
 	
 	if (action==='completed') {
 		// axios.post(slack_url,
