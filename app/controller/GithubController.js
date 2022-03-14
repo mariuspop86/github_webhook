@@ -78,7 +78,7 @@ app.use('/payload?2', (req, res, next) => {
 	let text = ` - workflow <${html_url}|*${name}*> completed with *${conclusion}* - `
 	if (e) {
 		const {user: {user_html_url, author_name},workflow: { commit_url } } = e.data
-		text += ` <${author_name}|*${user_html_url}*> pushed <commit|*${commit_url}*> `;
+		text += ` <${user_html_url}|*${author_name}*> pushed <${commit_url}|*commit*> `;
 	}
 	
 	if (action==='completed') {
