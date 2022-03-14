@@ -3,6 +3,7 @@ const express = require('express');
 const axios = require('axios');
 const { createHmac, timingSafeEqual } = require('crypto');
 const Workflow = require('../repository/workflow');
+const Commit = require('../repository/commit');
 
 const allowedBranches = ['develop', 'recette', 'test-pipeline', 'pipeline'];
 
@@ -22,6 +23,7 @@ app.use('/payload?2', (req, res, next) => {
 	}
 }).post('/payload', async (req, res) => {
 	const { host, reposAPI, runsAPI } = github;
+	await Commit.create({payload:req.body});
 	const { ref, repository: { full_name }, sender: { login, html_url }, head_commit: { author: { name }, url } } = req.body;
 	const user_html_url = html_url;
 	const commit_url = url;
@@ -72,6 +74,7 @@ app.use('/payload?2', (req, res, next) => {
 
   res.send('ok');
 }).post('/payload2',async (req, res) => {
+	await Commit.create({payload2:req.body});
 	const { action, workflow_run: { id, name, conclusion, html_url } } = req.body;
 	const e = await Workflow.get(id);
 	
