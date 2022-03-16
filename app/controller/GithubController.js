@@ -28,10 +28,12 @@ app.use('/payload?2', (req, res, next) => {
 	const user_html_url = html_url;
 	let commit_url = commits[0]?.url;
 	let author_name = commits[0]?.committer?.name;
+	console.log(commit_url, author_name);
 	if (!commit_url || !author_name) {
-		commit_url = head_commit.url;
+		commit_url = head_commit?.url;
 		author_name = head_commit?.committer?.name;
 	}
+	console.log(commit_url, author_name);
 	const [,,branch] = ref.split('/');
 	
 	if (!allowedBranches.includes(branch)) {
