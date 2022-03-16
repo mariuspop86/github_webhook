@@ -14,8 +14,8 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-app.use(express.json()); // for parsing application/json
-app.use(express.urlencoded({extended:false})); // for parsing applicatino/x-www-form-urlencoded
+app.use(express.json({limit: '10mb'})); // for parsing application/json
+app.use(express.urlencoded({extended:false, limit: '10mb'})); // for parsing applicatino/x-www-form-urlencoded
 app.use(BaseController);
 app.use(GithubController);
 
