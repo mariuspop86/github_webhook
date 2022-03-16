@@ -24,10 +24,14 @@ app.use('/payload?2', (req, res, next) => {
 }).post('/payload', async (req, res) => {
 	const { host, reposAPI, runsAPI } = github;
 	await Commit.create({payload:req.body});
-	const { ref, repository: { full_name }, sender: { login, html_url }, commits } = req.body;
+	const { ref, repository: { full_name }, sender: { login, html_url }, commits, head_commit } = req.body;
 	const user_html_url = html_url;
-	const commit_url = commits[0].url;
-	const author_name = commits[0].committer.name;
+	let commit_url = commits[0]?.url;
+	let author_name = commits[0]?.committer?.name;
+	if (!commit_url || !author_name) {
+		commit_url = head_commit.url;
+		author_name = head_commit?.committer?.name;
+	}
 	const [,,branch] = ref.split('/');
 	
 	if (!allowedBranches.includes(branch)) {
