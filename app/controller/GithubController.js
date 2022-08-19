@@ -101,6 +101,10 @@ app.use('/payload?2', (req, res, next) => {
 	}
 	
 	res.send('ok');
+}).post('/action',async (req, res) => {
+	console.log(req.body);
+
+	res.send('ok');
 });
 
 module.exports = app;
