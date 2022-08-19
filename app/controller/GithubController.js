@@ -103,6 +103,18 @@ app.use('/payload?2', (req, res, next) => {
 	res.send('ok');
 }).post('/action',async (req, res) => {
 	console.log(req.body);
+	const { github: {server_url, repository, run_id, workflow}, step: { outcome } } = req.body;
+	const html_url = server_url + '/' + repository + '/actions/runs/' + run_id;
+	
+	let text = ` - workflow <${html_url}|*${workflow}*> completed with *${outcome}* - `
+	
+	axios.post(slack_url,
+		{
+			"text": text
+		})
+		.catch(error => {
+			console.log('error', error);
+		});
 
 	res.send('ok');
 });
