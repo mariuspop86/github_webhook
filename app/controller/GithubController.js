@@ -21,6 +21,38 @@ app.use('/payload?2', (req, res, next) => {
 		console.log('Signature matched!')
 	  next();
 	}
+}).use('/action', (req, res, next) => {
+	let valid = true;
+	const { body } = req
+	const validateOption = {
+		'github': [
+			'server_url', 
+			'repository', 
+			'run_id', 
+			'workflow'
+		], 
+		'step': ['outcome'] 
+	};
+		
+	Object.keys(validateOption).forEach(value => {
+		if (valid && body.hasOwnProperty(value)) {
+			validateOption[value].forEach(val => {
+				if (valid && !body[value].hasOwnProperty(val)) {
+					valid = false
+				}
+			})
+		} else {
+			valid = false
+		}
+	})
+	
+	if (!valid) {
+		console.log('Invalid payload');
+		res.status(400).send('nok');
+	} else {
+		console.log('Payload valid')
+		next();
+	}
 }).post('/payload', async (req, res) => {
 	const { host, reposAPI, runsAPI } = github;
 	await Commit.create({payload:req.body});
@@ -102,7 +134,6 @@ app.use('/payload?2', (req, res, next) => {
 	
 	res.send('ok');
 }).post('/action',async (req, res) => {
-	console.log(req.body);
 	const { github: {server_url, repository, run_id, workflow}, step: { outcome } } = req.body;
 	const html_url = server_url + '/' + repository + '/actions/runs/' + run_id;
 	
